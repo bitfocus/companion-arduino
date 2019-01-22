@@ -5,11 +5,11 @@
 #include <ArdOSC.h> // You need to install the ArdOSC library for arduino :)
 
 // Arduino input pins (you need to short them to GND to "press")
-char inputPin[] = { 
-  9, 
-  8, 
-  7, 
-  6 
+char inputPin[] = {
+  9,
+  8,
+  7,
+  6
 };
 
 // Which companion button do you want to link this to?
@@ -32,7 +32,7 @@ byte destIp[]  = { 10, 255, 255, 253 };
 // Companion OSC Port
 int destPort = 12321; // Companion OSC port
 
-// YOU DON'T NEED TO EDIT ANYTHING BELOW THIS LINE IF YOU DON'T KNOW 
+// YOU DON'T NEED TO EDIT ANYTHING BELOW THIS LINE IF YOU DON'T KNOW
 // WHAT YOU'RE DOING :)
 
 // Establish a OSC client
@@ -61,11 +61,11 @@ void setup() {
 void loop() {
 
   for (char i = 0; i < sizeof(inputPin); i++) {
-    
+
     char reading = digitalRead(inputPin[i]);
 
     if (reading != input[i]) {
-      
+
       input[i] = reading;
 
       // If button is pressed
@@ -77,33 +77,28 @@ void loop() {
       else {
         press_bank(companionButton[i*2], companionButton[(i*2)+1], 0);
       }
-  
+
       delay(50); // Wait, there might be noise.
-      
+
     }
-    
+
   }
-  
+
 }
 
 void press_bank(int page, int bank, int dir) {
 
    // Set destination for the OSC packet.
-  oscMessage.setAddress(destIp, destPort);  
+  oscMessage.setAddress(destIp, destPort);
 
   // Build the OSC packet
-  String oscstring = String("/press/bank/") + String(page) + String("/") + String(bank);  
+  String oscstring = String("/press/bank/") + String(page) + String("/") + String(bank);
   oscMessage.beginMessage(oscstring.c_str());
   oscMessage.addArgInt32(dir);
 
   // Send the OSC packet
   client.send(&oscMessage);
-  
+
   oscMessage.flush(); //object data clear
 
 }
-
-
-
-
-
